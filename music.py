@@ -2,10 +2,15 @@ import scipy.io.wavfile as wav
 import numpy as np
 
 
-def read_music(file_name):
-    frame_rate, amplitude = wav.read(file_name)
-    if type(amplitude[0]) == 'numpy.ndarray':
-        amplitude = amplitude[:,0] + amplitude[:,1]
+class Music():
 
-    print(frame_rate)
-    print(amplitude)
+    def __init__(self, file_name):
+        self.file_name = file_name
+        self.frame_rate, self.amplitude = wav.read(self.file_name)
+        
+        if type(self.amplitude[0]) == 'numpy.ndarray':
+            self.amplitude = (self.amplitude[:,0] + self.amplitude[:,1])/2
+   
+    def __str__(self):
+        info = (self.file_name, self.frame_rate, str(self.amplitude))
+        return "Filename : %s\nFrame Rate : %d\nAmplitudes : %s" % info
