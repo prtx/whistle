@@ -8,7 +8,7 @@ class Music():
         self.file_name = file_name
         self.frame_rate, self.amplitude = wav.read(self.file_name)
         
-        if type(self.amplitude[0]) == 'numpy.ndarray':
+        if type(self.amplitude[0]) == np.ndarray:
             self.amplitude = (self.amplitude[:,0] + self.amplitude[:,1])/2
    
     def __str__(self):
