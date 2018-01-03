@@ -20,14 +20,26 @@ class Music:
 
 
     def waveform(self):
-        plt.clf()
         time = np.arange(0, len(self.amplitude))/self.frame_rate
-        plt.plot(time, self.amplitude)
 
+        plt.clf()
+        plt.plot(time, self.amplitude)
         plt.title(self.file_name)
         plt.xlabel("Time (sec)")
         plt.ylabel("Amplitude")
-        
+        plt.show()
+
+
+    def spectogram(self):
+        spectre = np.fft.fft(self.amplitude)
+        freq = np.fft.fftfreq(len(self.amplitude), 1/self.frame_rate)
+        mask = freq > 0
+
+        plt.clf()
+        plt.plot(freq[mask], np.abs(spectre[mask]))
+        plt.title(self.file_name)
+        plt.xlabel("Frequency (Hz)")
+        plt.ylabel("Amplitude")
         plt.show()
 
 
