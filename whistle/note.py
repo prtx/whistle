@@ -3,14 +3,33 @@ import math
 
 NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
+class NoteException(Exception):
+    pass
+
+
 class Note:
     def __init__(self, note, octave):
-        self.note = note
-        self.octave = octave
+        if note not in NOTES:
+            raise NoteException("{} is not a notation.".format(note))
+        if not isinstance(octave, int):
+            raise NoteException("Octace should be an integer.")
+
+        self._note = note
+        self._octave = octave
     
 
+    @property
+    def note(self):
+        return self._note
+
+
+    @property
+    def octave(self):
+        return self._octave
+
+
     def __repr__(self):
-        return "{}{}".format(self.note, self.octave)
+        return "{}{}".format(self._note, self._octave)
 
 
 A4 = 440
