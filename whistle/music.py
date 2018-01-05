@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import scipy.io.wavfile as wavfile
 import scipy.fftpack as fftpack
 
-from whistle.note_recognition import freq_to_note
+from whistle.note_recognition import freq_to_note, strongest_note
 
 
 def compute_freq_domain(amplitude, frame_rate):
@@ -63,6 +63,11 @@ class Music:
         vfunc = np.vectorize(lambda f: freq_to_note(f))
         freqs, spectre = self.compute_freq_domain()
         return vfunc(freqs)
+
+
+    def strongest_note(self):
+        freqs, spectre = self.compute_freq_domain()
+        return strongest_note(freqs, spectre)
 
 
 class MusicFile(Music):
