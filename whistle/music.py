@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import scipy.io.wavfile as wavfile
 import scipy.fftpack as fftpack
 
-from whistle.note_recognition import freq_to_note, strongest_note
+from whistle.note import freq_to_note, strongest_note
 
 
 def compute_freq_domain(amplitude, frame_rate):

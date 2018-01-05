@@ -1,5 +1,16 @@
 import math
-from whistle.constants import NOTES
+
+
+NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+
+class Note:
+    def __init__(self, note, octave):
+        self.note = note
+        self.octave = octave
+    
+
+    def __repr__(self):
+        return "{}{}".format(self.note, self.octave)
 
 
 A4 = 440
@@ -7,7 +18,7 @@ C0 = A4 * math.pow(2, -4.75)
 def freq_to_note(freq):
     half_steps = round(12 * math.log2(freq/C0))
     octave = half_steps // 12
-    return NOTES[half_steps % 12] + str(octave)
+    return Note(NOTES[half_steps % 12], octave)
 
 
 def strongest_note(freqs, spectre):
