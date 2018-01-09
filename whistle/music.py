@@ -4,16 +4,14 @@ import pylab
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io.wavfile as wavfile
-import scipy.fftpack as fftpack
 
-from whistle.note import freq_to_note, strongest_note
-
-
-def compute_freq_domain(amplitude, frame_rate):
-    freqs = np.fft.fftfreq(len(amplitude), 1/frame_rate)
-    spectre = np.fft.fft(amplitude)
-    mask = freqs > 0
-    return freqs[mask], np.abs(spectre[mask])
+from whistle.note import (
+    freq_to_note,
+    compute_freq_domain,
+    compute_notes,
+    strongest_note,
+)
+from whistle.chord import compute_chord
 
 
 class Music:
@@ -21,24 +19,17 @@ class Music:
         self.name = name
         self.amplitude = amplitude
         if isinstance(self.amplitude[0], np.ndarray):
-            self.amplitude = (self.amplitude[:,0] + self.amplitude[:,1])/2
+            self.amplitude = (self.amplitude[:, 0] + self.amplitude[:, 1]) / 2
         self.frame_rate = frame_rate
 
-
     def __repr__(self):
-        return (
-            "Name: {}\n"
-            "Frame Rate: {}Hz"
-            .format(self.name, self.frame_rate)
-        )
-
+        return "Name: {}\nFrame Rate: {}Hz".format(self.name, self.frame_rate)
 
     def compute_freq_domain(self):
         return compute_freq_domain(self.amplitude, self.frame_rate)
 
-
     def waveform(self):
-        time = np.arange(0, len(self.amplitude))/self.frame_rate
+        time = np.arange(0, len(self.amplitude)) / self.frame_rate
 
         plt.clf()
         plt.plot(time, self.amplitude)
@@ -46,7 +37,6 @@ class Music:
         plt.xlabel("Time (sec)")
         plt.ylabel("Amplitude")
         plt.show()
-
 
     def spectogram(self):
         freqs, spectre = self.compute_freq_domain()
@@ -58,16 +48,17 @@ class Music:
         plt.ylabel("Amplitude")
         plt.show()
 
-
     def notes(self):
-        vfunc = np.vectorize(lambda f: freq_to_note(f))
         freqs, spectre = self.compute_freq_domain()
-        return vfunc(freqs)
-
+        return compute_notes(freqs)
 
     def strongest_note(self):
         freqs, spectre = self.compute_freq_domain()
         return strongest_note(freqs, spectre)
+
+    def chord(self):
+        freqs, spectre = self.compute_freq_domain()
+        return compute_chord(freqs, spectre)
 
 
 class MusicFile(Music):
@@ -76,11 +67,9 @@ class MusicFile(Music):
         frame_rate, amplitude = wavfile.read(file_path)
         super().__init__(name or self.file_name, frame_rate, amplitude)
 
-
     def __repr__(self):
         return (
             "Name: {}\n"
             "File name: {}\n"
-            "Frame Rate: {}Hz"
-            .format(self.name, self.file_name, self.frame_rate)
+            "Frame Rate: {}Hz".format(self.name, self.file_name, self.frame_rate)
         )
