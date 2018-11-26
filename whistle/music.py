@@ -3,7 +3,9 @@ import pyaudio
 import pylab
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import signal
 import scipy.io.wavfile as wavfile
+import IPython
 
 from whistle.note import (
     freq_to_note,
@@ -38,7 +40,7 @@ class Music:
         plt.ylabel("Amplitude")
         plt.show()
 
-    def spectogram(self):
+    def frequency_domain(self):
         freqs, spectre = self.compute_freq_domain()
 
         plt.clf()
@@ -47,6 +49,15 @@ class Music:
         plt.xlabel("Frequency (Hz)")
         plt.ylabel("Amplitude")
         plt.show()
+
+    def spectogram(self):
+        plt.specgram(self.amplitude, Fs=self.frame_rate)
+        plt.ylabel('Frequency [Hz]')
+        plt.xlabel('Time [sec]')
+        plt.show()
+
+    def ipyplay(self):
+        IPython.display.Audio(data=self.amplitude, rate=self.frame_rate)
 
     def notes(self):
         freqs, spectre = self.compute_freq_domain()
@@ -65,7 +76,7 @@ class MusicFile(Music):
     def __init__(self, file_path, name=None):
         self.file_name = os.path.basename(file_path)
         frame_rate, amplitude = wavfile.read(file_path)
-        super().__init__(name or self.file_name, frame_rate, amplitude)
+        super().__init__(name or self.file_name.split(".")[0], frame_rate, amplitude)
 
     def __repr__(self):
         return (
